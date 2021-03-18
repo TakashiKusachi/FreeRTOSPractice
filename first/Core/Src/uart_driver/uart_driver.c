@@ -50,6 +50,8 @@ int UART_Driver_Start(void)
 			tx_buffer,
 			&tx_bufferStruct
 			);
+	if(tx_buffer_handle == NULL)configASSERT(0);
+
 	tx_task = xTaskCreateStatic(
 			__uart_transmit_task,
 			"UART2_TRANSMIT_TASK",
@@ -58,6 +60,7 @@ int UART_Driver_Start(void)
 			configMAX_PRIORITIES - 1,
 			tx_Stack,
 			&tx_TaskStract);
+	if(tx_task == NULL)configASSERT(0);
 }
 
 /**
