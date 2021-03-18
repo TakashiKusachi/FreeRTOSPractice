@@ -15,10 +15,8 @@
 
 #include "stm32f3xx_hal.h"
 
-#define UART2_TRANSMIT_TASK_STACK_SIZE 256
-#define UART2_TRANSMIT_BUFFER_SIZE 128
-#define UART2_TRANSMIT_BUFFER_TRIGGER_LEVEL 1
-#define UART2_TRANSMIT_TASK_RECEIVE_TIMEOUT 1000
+#include "uart_driver/uart_driver.h"
+#include "uart_driver/uart_driver_config.h"
 
 /**
  *
@@ -41,7 +39,9 @@ static uint8_t tx_buffer[UART2_TRANSMIT_BUFFER_SIZE];
  */
 //static TaskHandle_t rx_task; //?
 
-
+/**
+ * UARTドライバのTX/RXドライバタスクの起動関数
+ */
 int UART_Driver_Start(void)
 {
 	tx_buffer_handle = xStreamBufferCreateStatic(
@@ -60,11 +60,21 @@ int UART_Driver_Start(void)
 			&tx_TaskStract);
 }
 
+/**
+ * UART送信API
+ */
 int UART_Transmit(const uint8_t* data,uint16_t length)
 {
 	xStreamBufferSend(tx_buffer_handle,(const void*)data,(size_t)length,100);
 }
 
+/**
+ * 以下送信処理タスクに関連した関数群
+ */
+
+/**
+ *
+ */
 extern UART_HandleTypeDef huart2;
 static void __uart2_transmit_complete_cb_handler(UART_HandleTypeDef*);
 
